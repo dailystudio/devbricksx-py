@@ -15,7 +15,7 @@ setup(
     packages=find_packages(include=["devbricksx", "devbricksx.*"]),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software Licens",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     license="Apache License 2.0",
