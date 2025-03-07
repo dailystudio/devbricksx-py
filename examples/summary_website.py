@@ -1,9 +1,15 @@
 import argparse
+from datetime import datetime
 
 from devbricksx.common.parser import append_common_developer_options_to_parse
-from devbricksx.development.log import set_debug_enabled, set_silent_enabled
+from devbricksx.development.log import set_debug_enabled, set_silent_enabled, debug, info
 from devbricksxai.generativeai.genai import init_generative_ai_args, init_generative_ai, \
-    create_task_force_from_arguments
+    create_task_force_from_arguments, print_task_force_info
+from devbricksxai.generativeai.roles.artisans.analysts.news.news_ai_analyst import NewsAIAnalyst
+from devbricksxai.generativeai.roles.artisans.analysts.news.news_analyst import NewsAnalyst, News
+from devbricksxai.generativeai.roles.character import list_characters, Role
+
+DEFAULT_NEWS_ITEM_PER_SOURCE = 5
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -40,3 +46,58 @@ if __name__ == "__main__":
     init_generative_ai(args)
 
     task_force = create_task_force_from_arguments("main", args)
+
+    analysts = list_characters(Role.ARTISAN, in_instances=[NewsAnalyst])
+    for a in analysts:
+        task_force.add_member(a)
+
+    analysts = list_characters(Role.ARTISAN, in_instances=[NewsAIAnalyst])
+    for a in analysts:
+        task_force.add_member(a)
+
+    print_task_force_info(task_force, debug)
+
+    limit = DEFAULT_NEWS_ITEM_PER_SOURCE
+    if args.item_per_site is not None:
+        limit = args.item_per_site
+
+    info('==============================================')
+    info('|                  Trending                   |')
+    info('==============================================')
+    info(f'News sites:                   [{args.news_sites}]')
+    info(f'News pages:                   [{args.news_pages}]')
+    info(f'Max num. of news per site:    [{limit}]')
+    info(f'Extract news content:         [{not args.no_content_extraction}]')
+    info(f'Analyze news item:            [{not args.no_content_extraction and not args.no_analysis}]')
+    info('----------------------------------------------')
+
+    analysts = task_force.select_members(Role.ARTISAN, NewsAnalyst)
+    analysts = sorted(analysts, key=lambda x: x.priority, reverse=True)
+
+    extracted_items = []
+    if args.news_pages is not None:
+        for page in args.news_pages:
+            news_item = News()
+            news_item.provider = ""
+
+            news_item.link = page
+
+            news_item.title = ""
+            news_item.datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            extracted_items += [news_item]
+
+    if args.news_sites is not None:
+        for site in args.news_sites:
+            debug(f"analyzing site: {site}")
+
+            for analyst in analysts:
+                if analyst.can_analyze(site, action = NewsAnalyst.ACTION_EXTRACT_ITEMS):
+                    debug(f"using [{analyst.alias}] to extract items from: {site}")
+
+                    items = analyst.craft(data=site, limit=limit)
+                    if items is not None and len(items) > 0:
+                        extracted_items += items
+                        break
+
+    info(f'extracted news items: {len(extracted_items)}')
+    info(', '.join(str(item) for item in extracted_items))

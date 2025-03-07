@@ -35,16 +35,16 @@ class Analyst(Artisan, ABC):
 
 
 def init_analysts():
-    from generativeai.roles.character import register_character
-    from generativeai.roles.artisans.analysts.news.newssite.bbc import BBCAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.ccn import CNNAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.universal import UniversalAnalyst
-    from generativeai.roles.artisans.analysts.news.rss.reddit import RedditAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.chinanews import ChinaNewsAnalyst
-    from generativeai.roles.artisans.analysts.news.news_ai_analyst import NewsAIAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.thepaper import ThePaperAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.toutiao import ToutiaoAnalyst
-    from generativeai.roles.artisans.analysts.news.newssite.googleplay import GooglePlayAnalyst
+    from devbricksxai.generativeai.roles.character import register_character
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.bbc import BBCAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.ccn import CNNAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.universal import UniversalAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.rss.reddit import RedditAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.chinanews import ChinaNewsAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.news_ai_analyst import NewsAIAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.thepaper import ThePaperAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.toutiao import ToutiaoAnalyst
+    from devbricksxai.generativeai.roles.artisans.analysts.news.newssite.googleplay import GooglePlayAnalyst
 
     # International News
     register_character(BBCAnalyst())
