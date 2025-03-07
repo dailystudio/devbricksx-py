@@ -2,11 +2,11 @@ import json
 from datetime import datetime
 
 from google.cloud.firestore_v1 import FieldFilter
+
+from devbricksxai.generativeai.roles.artisans.historian import Historian
 from firebase_admin import firestore, credentials
 
 from devbricksx.development.log import debug
-from devbricksxai.generativeai.roles.artisans.historian import Historian
-
 
 HISTORIAN_FIRESTORE = 'Firestore'
 __FIREBASE_PROVIDER__ = 'Firebase'
