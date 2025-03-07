@@ -72,9 +72,7 @@ class OutEscort(Escort, ABC):
 
 
 def init_escorts():
-    from generativeai.roles.character import register_character
-    from generativeai.roles.artisans.escorts.url import UrlEscort
-    from generativeai.roles.artisans.escorts.cloud_storage import CloudStorageEscort
+    from devbricksxai.generativeai.roles.character import register_character
+    from devbricksxai.generativeai.roles.artisans.escorts.url import UrlEscort
 
     register_character(UrlEscort())
-    register_character(CloudStorageEscort())

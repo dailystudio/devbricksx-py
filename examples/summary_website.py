@@ -1,13 +1,3 @@
-import sys
-import os
-
-# 获取 myproject 的绝对路径
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# 添加到 sys.path
-sys.path.append(project_root)
-
-
 import argparse
 
 from devbricksx.common.parser import append_common_developer_options_to_parse

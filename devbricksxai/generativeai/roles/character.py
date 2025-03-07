@@ -21,7 +21,7 @@ class Character:
         if not isinstance(role, Role):
             raise ValueError("role must be an instance of Role")
         self.name = name
-        self.alias = re.sub(r'[^a-zA-Z0-9_-]', '', self.name).lower()
+        self.alias = Character.name_to_alias(name)
         self.provider = provider
         self.role = role
         self.parameters = {}
@@ -33,6 +33,10 @@ class Character:
         if key in self.parameters:
             return self.parameters[key]
         return None
+
+    @staticmethod
+    def name_to_alias(name):
+        return re.sub(r'[^a-zA-Z0-9_-]', '', name).lower()
 
     def __str__(self):
         return f"[{self.name}, {self.role.name.upper()}]:\n|- Alias: {self.alias}\n|- Provider: {self.provider}\n`- Parameters: {self.parameters}"
@@ -76,7 +80,8 @@ def init_characters():
 def get_character_by_name(name, instance=None):
     global __CHARACTERS
 
-    character = __CHARACTERS[name.lower()]
+    alias = Character.name_to_alias(name)
+    character = __CHARACTERS.get(alias)
     if character is None:
         return None
 

@@ -22,7 +22,7 @@ class Advisor(Character, ABC):
         return self.ask(prompt, **kwargs)
 
 def init_advisors():
-    from generativeai.roles.character import register_character
-    from generativeai.roles.advisors.chatgpt import ChatGPTAdvisor
+    from devbricksxai.generativeai.roles.character import register_character
+    from devbricksxai.generativeai.roles.advisors.chatgpt import ChatGPTAdvisor
 
     register_character(ChatGPTAdvisor())

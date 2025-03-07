@@ -20,11 +20,8 @@ class DallEPainter(Painter):
 
     PARAM_SEED = "seed"
 
-    ai_model = get_ai_settings().open_ai_model
-
     def __init__(self):
         super().__init__(PAINTER_DALL_E, __PAINTER_PROVIDER__)
-        openai.api_key = get_ai_settings().open_ai_apikey
 
     def get_default_model(self):
         return DallEPainter.MODEL_DALL_E_3
@@ -52,6 +49,8 @@ class DallEPainter(Painter):
                                     )
 
 def text_to_image_dall_e(prompt, model, width, height, seed=None):
+    openai.api_key = get_ai_settings().open_ai_apikey
+
     if seed is not None:
         prompt = f"{prompt}. Seed: {seed}"
         debug(f"update prompt with seed [{seed}]: {prompt}")

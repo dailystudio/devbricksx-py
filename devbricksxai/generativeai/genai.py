@@ -10,7 +10,7 @@ from devbricksxai.generativeai.roles.artisans.historians.firestore import HISTOR
 from devbricksxai.generativeai.roles.artisans.musician import Musician
 from devbricksxai.generativeai.roles.artisans.musicians.suno_musician import MUSICIAN_SUNO
 from devbricksxai.generativeai.roles.artisans.painter import Painter
-from devbricksxai.generativeai.roles.artisans.painters.sdapi import PAINTER_SD_API
+from devbricksxai.generativeai.roles.artisans.painters.dalle import PAINTER_DALL_E
 from devbricksxai.generativeai.roles.character import list_characters, Role, init_characters, get_character_by_name
 from devbricksxai.generativeai.settings.aisettings import init_ai_settings, DEFAULT_AI_SETTINGS_FILE, get_ai_settings
 from devbricksxai.generativeai.taskforce import TaskForce
@@ -33,7 +33,7 @@ def append_task_force_options_to_parse(ap: argparse.ArgumentParser):
                                help="specify generative AI Advisor to use. [{}]".format(
                                    ", ".join(a.alias for a in available_advisors)))
     tf_opts_group.add_argument("-p", "--painter",
-                               default=PAINTER_SD_API,
+                               default=PAINTER_DALL_E,
                                help="specify generative AI Painter to use. [{}]".format(
                                    ", ".join(p.alias for p in available_painters)))
     tf_opts_group.add_argument("-m", "--musician",
@@ -72,6 +72,7 @@ def init_generative_ai_args(args_parse):
     append_task_force_options_to_parse(args_parse)
 
 def init_generative_ai(args):
+    debug("using settings file: {}".format(args.settings_file))
     init_ai_settings(args.settings_file)
     init_characters()
 
@@ -102,7 +103,7 @@ def create_task_force_from_arguments(name, args):
     if args.painter is not None:
         painter = get_character_by_name(args.painter, Painter)
     if painter is None:
-        painter = get_character_by_name(PAINTER_SD_API, Painter)
+        painter = get_character_by_name(PAINTER_DALL_E, Painter)
 
     if painter is not None:
         task_force.add_member(painter)

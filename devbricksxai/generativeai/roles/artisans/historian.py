@@ -86,7 +86,7 @@ class Historian(Artisan):
 
 
 def init_historians():
-    from generativeai.roles.character import register_character
-    from generativeai.roles.artisans.historians.firestore import FirestoreHistorian
+    from devbricksxai.generativeai.roles.character import register_character
+    # from devbricksxai.generativeai.roles.artisans.historians.firestore import FirestoreHistorian
 
-    register_character(FirestoreHistorian())
+    # register_character(FirestoreHistorian())

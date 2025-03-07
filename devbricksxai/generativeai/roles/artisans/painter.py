@@ -81,9 +81,7 @@ class Painter(Artisan, ABC):
             img_resized.save(dest_file, 'JPEG', quality=quality)
 
 def init_painters():
-    from generativeai.roles.character import register_character
-    from generativeai.roles.artisans.painters.dalle import DallEPainter
-    from generativeai.roles.artisans.painters.sdapi import SdApiPainter
+    from devbricksxai.generativeai.roles.character import register_character
+    from devbricksxai.generativeai.roles.artisans.painters.dalle import DallEPainter
 
-    register_character(SdApiPainter())
     register_character(DallEPainter())
