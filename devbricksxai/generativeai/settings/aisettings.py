@@ -1,46 +1,36 @@
+import json
 from dataclasses import dataclass
 
 from devbricksx.common.json_convert import JsonConvert
 from devbricksx.development.log import debug
 
-DEFAULT_AI_SETTINGS_FILE = "private/ai.json"
+DEFAULT_AI_SETTINGS_FILE = "private/genai.json"
 
 @dataclass
 class AISettings:
-    open_ai_apikey: str
-    open_ai_model: str
-    dall_e_model: str
-    sd_apikey: str
-    bard_apikey: str
-    bard_model: str
-    reddit_client_id: str
-    reddit_client_secret: str
-    firebase_service_account_key: str
-    firebase_storage_bucket: str
+    providers: {}
+    characters: {}
+    members: {}
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @staticmethod
+    def from_dict(data):
+        return AISettings(**data)
 
     def __str__(self):
-        print_str = 'AI settings:\n' \
-                    'OPEN.AI API Key: [%s]\nOPEN.AI Model: [%s]\nDALL·E Model: [%s]' \
-                    'SD API Key: [%s]\n' \
-                    'Bard API Key: [%s]\nBard Model: [%s]\n' \
-                    'Firebase Service Account Key: [%s]\nFirebase Storage Bucket; [%s]'
+        return f"{json.dumps(self.__dict__, indent=4, ensure_ascii=False)}"
 
-        return print_str % (self.open_ai_apikey,
-                            self.open_ai_model,
-                            self.dall_e_model,
-                            self.sd_apikey,
-                            self.bard_apikey,
-                            self.bard_model,
-                            self.firebase_service_account_key,
-                            self.firebase_storage_bucket)
-
-aiSettings = {}
+ai_settings = {}
 
 def init_ai_settings(ai_settings_file):
-    global aiSettings
+    global ai_settings
     debug(f"Loading AI settings from[{ai_settings_file}] ... ")
-    aiSettings = JsonConvert.from_file(ai_settings_file, AISettings)
-    debug("Loaded AI settings: {}".format(aiSettings))
+    ai_settings_dict = JsonConvert.from_file_to_dict(ai_settings_file)
+    ai_settings = AISettings.from_dict(ai_settings_dict)
+    debug("Loaded AI settings: {}".format(ai_settings))
 
 def get_ai_settings():
-    return aiSettings
+    return ai_settings

@@ -1,6 +1,9 @@
 import json
 import jsons
 
+from devbricksx.development.log import error
+
+
 class JsonConvert(object):
 
     @classmethod
@@ -27,3 +30,19 @@ class JsonConvert(object):
         with open(filepath, 'r') as json_file:
             result = cls.from_json(json_file.read(), object_class)
         return result
+
+    @classmethod
+    def from_file_to_dict(cls, filepath):
+        try:
+            with open(filepath, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                return data
+        except FileNotFoundError:
+            error(f"file '{filepath}' does NOT exist.")
+            return None
+        except json.JSONDecodeError:
+            error(f"file '{filepath}' does NOT contain valid JSON format.")
+            return None
+        except Exception as e:
+            error(f"unknown error occurred: {e}")
+            return None

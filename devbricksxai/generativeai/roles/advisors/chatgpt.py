@@ -10,13 +10,16 @@ __ADVISOR_PROVIDER__ = 'OpenAI.com'
 class ChatGPTAdvisor(Advisor):
     PARAM_CONTEXT = 'context'
     PARAM_MODEL = 'model'
+    PARAM_API_KEY = 'apikey'
 
     def __init__(self):
         super().__init__(ADVISOR_GPT, __ADVISOR_PROVIDER__)
-        openai.api_key = get_ai_settings().open_ai_apikey
-
+        # openai.api_key = get_ai_settings().open_ai_apikey
 
     def ask(self, prompt, **kwargs):
+        openai.api_key = self.get_parameter(ChatGPTAdvisor.PARAM_API_KEY)
+        debug("OPEN AI API Key: {}".format(openai.api_key))
+
         model = self.get_parameter(ChatGPTAdvisor.PARAM_MODEL)
         if model is None:
             model = get_ai_settings().open_ai_model

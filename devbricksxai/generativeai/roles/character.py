@@ -2,6 +2,7 @@ import re
 from enum import Enum
 
 from devbricksx.development.log import info, warn, debug
+from devbricksxai.generativeai.settings.aisettings import get_ai_settings
 
 __CHARACTERS = {}
 # Define the enum class for character types
@@ -30,9 +31,22 @@ class Character:
         self.parameters[key] = value
 
     def get_parameter(self, key):
+        value = None
+
         if key in self.parameters:
-            return self.parameters[key]
-        return None
+            value = self.parameters[key]
+
+        if value is None:
+            provider = get_ai_settings().providers.get(self.provider)
+            if provider is not None:
+                value = provider.get(key)
+
+        if value is None:
+            character = get_ai_settings().characters.get(self.alias)
+            if character is not None:
+                value = character.get(key)
+
+        return value
 
     @staticmethod
     def name_to_alias(name):

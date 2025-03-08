@@ -4,7 +4,6 @@ import praw
 
 from devbricksxai.generativeai.roles.artisans.analysts.news.news_analyst import NewsAnalyst, News
 from devbricksxai.generativeai.roles.artisans.analysts.news.rss.rss_analyst import RSSAnalyst
-from devbricksxai.generativeai.settings.aisettings import aiSettings
 from devbricksx.development.log import info, debug, warn
 
 __REDDIT_BASE_URL__ = "https://www.reddit.com"
