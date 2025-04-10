@@ -14,32 +14,38 @@ def append_common_developer_options_to_parse(ap):
                     help="silent only some critical outputs remained")
 
 
-def append_common_dir_options_to_parse(ap):
-    dir_opts_group = ap.add_argument_group('input and output arguments')
-    dir_opts_group.add_argument("-id", "--input-directory",
-                                required=True,
-                                help="input directory with image files")
-    dir_opts_group.add_argument("-od", "--output-directory",
-                                help="output directory with image files")
-
-
-def append_common_file_options_to_parse(ap, group_required=False, enable_od=True):
-    file_opts_group = ap.add_argument_group('input and output arguments')
-    group = file_opts_group.add_mutually_exclusive_group(required=group_required)
-    group.add_argument("-if", "--input-file",
-                       help="input image file")
-    group.add_argument("-id", "--input-directory",
-                       help="input directory with image files")
-
-    if not enable_od:
-        file_opts_group.add_argument("-of", "--output-file",
-                                     help="output image file")
+def append_common_dir_options_to_parse(ap, required=False, group_required=False):
+    if group_required:
+        dir_opts_group = ap.add_argument_group('input and output directory arguments')
+        dir_opts_group.add_argument("-id", "--input-directory",
+                                    required=True,
+                                    help="input directory of files")
+        dir_opts_group.add_argument("-od", "--output-directory",
+                                    help="output directory of files")
     else:
-        group = file_opts_group.add_mutually_exclusive_group(required=False)
-        group.add_argument("-of", "--output-file",
-                           help="output image file")
-        group.add_argument("-od", "--output-directory",
-                           help="output directory with image files")
+        ap.add_argument("-id", "--input-directory",
+                        required=required,
+                        help="input directory of files")
+        ap.add_argument("-od", "--output-directory",
+                        required=required,
+                        help="output directory of files")
+
+def append_common_file_options_to_parse(ap, required=False, group_required=False):
+    if group_required:
+        file_opts_group = ap.add_argument_group('input and output arguments')
+        file_opts_group.add_argument("-if", "--input-file",
+                                     required=required,
+                                     help="input file")
+        file_opts_group.add_argument("-of", "--output-file",
+                                     required=required,
+                                     help="output file")
+    else:
+        ap.add_argument("-if", "--input-file",
+                        required=required,
+                        help="input file")
+        ap.add_argument("-of", "--output-file",
+                        required=required,
+                        help="output file")
 
 
 def check_consistency_of_file_options(args):
