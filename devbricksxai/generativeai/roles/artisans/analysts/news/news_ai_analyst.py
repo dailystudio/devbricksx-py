@@ -76,10 +76,7 @@ class NewsAIAnalyst(Analyst, ABC):
 
         output_requirement = self.SUMMARIZE_NEWS_OUTPUT.format()
 
-        prompts = [
-            {"role": "user", "content": content_requirement},
-            {"role": "user", "content": output_requirement},
-        ]
+        prompts =[content_requirement, output_requirement]
 
         summary = retry_calls(self.generate_output_,
                               3,
