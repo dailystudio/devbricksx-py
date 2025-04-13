@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 
+from devbricksx.development.log import info
 from devbricksxai.generativeai.roles.character import Character, Role
 
 
@@ -39,9 +40,9 @@ class Advisor(Character, ABC):
         if isinstance(prompt, str):
             result = prompt
         elif isinstance(prompt, list):
-            result = ", ".join(prompt)  # 或者用其他分隔符
+            result = ", ".join(prompt)
         else:
-            result = str(prompt)  # 可选：处理其他类型
+            result = str(prompt)
         return result
 
     def craft(self, **kwargs):
@@ -51,12 +52,17 @@ class Advisor(Character, ABC):
                 f"craft() of {self.__class__.__name__} must include [{Advisor.PARAM_PROMPT}] in arguments.")
 
         formated_prompt = self.format_prompt(prompt)
+        info(f"formated_prompt: {formated_prompt}")
 
         session = kwargs.get(Advisor.PARAM_SESSION)
+        info(f"session: {session}")
+
         if session is not None:
-            histories = self.session_histories[session]
-            if histories is None:
-                histories = []
+            histories = []
+            if session in self.session_histories:
+                histories = self.session_histories[session]
+
+            info(f"histories: {histories}")
 
             kwargs[Advisor.PARAM_HISTORIES] = self.format_histories(histories)
             ret = self.ask(formated_prompt, **kwargs)
@@ -64,6 +70,8 @@ class Advisor(Character, ABC):
             if ret is not None and len(ret) > 0:
                 histories.append({"role": self.ROLE_USER, "content": prompt})
                 histories.append({"role": self.ROLE_ADVISOR, "content": ret})
+
+            self.session_histories[session] = histories
 
             return ret
         else:
