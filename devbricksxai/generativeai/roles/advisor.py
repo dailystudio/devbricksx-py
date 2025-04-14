@@ -80,5 +80,7 @@ class Advisor(Character, ABC):
 def init_advisors():
     from devbricksxai.generativeai.roles.character import register_character
     from devbricksxai.generativeai.roles.advisors.chatgpt import ChatGPTAdvisor
+    from devbricksxai.generativeai.roles.advisors.gemini import GeminiAdvisor
 
     register_character(ChatGPTAdvisor())
+    register_character(GeminiAdvisor())
