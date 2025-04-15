@@ -14,12 +14,14 @@ class GeminiAdvisor(Advisor):
 
     DEFAULT_MODEL = "gemini-2.0-flash"
 
+    sessions = {}
+
     def __init__(self):
         super().__init__(ADVISOR_GEMINI, __ADVISOR_PROVIDER__)
 
     def ask(self, prompt, **kwargs):
         api_key = self.get_parameter(GeminiAdvisor.PARAM_API_KEY)
-        debug("Gemini  API Key: {}".format(api_key))
+        debug("Gemini API Key: {}".format(api_key))
 
         client = genai.Client(api_key=api_key)
 
@@ -30,9 +32,21 @@ class GeminiAdvisor(Advisor):
         debug("[{}] be asked: {}".format(model, prompt))
 
         try:
-            response = client.models.generate_content(
-                model=model, contents=[prompt]
-            )
+            session = kwargs.get(Advisor.PARAM_SESSION)
+            info(f"session: {session}")
+            if session is not None:
+                if session not in self.sessions:
+                    chat = client.chats.create(model=model)
+                    self.sessions[session] = chat
+                else:
+                    chat = self.sessions[session]
+
+
+                response = chat.send_message(prompt)
+            else:
+                response = client.models.generate_content(
+                    model=model, contents=[prompt]
+                )
 
             if response is not None:
                 return response.text

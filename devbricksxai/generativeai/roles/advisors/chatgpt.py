@@ -17,9 +17,22 @@ class ChatGPTAdvisor(Advisor):
     ROLE_TAG_ADVISOR = 'assistant'
     ROLE_TAG_OTHERS = 'system'
 
+    session_histories = {}
+
     def __init__(self):
         super().__init__(ADVISOR_GPT, __ADVISOR_PROVIDER__)
         # openai.api_key = get_ai_settings().open_ai_apikey
+
+    def format_histories(self, histories):
+        formatted_histories = []
+        for history in histories:
+            role = history["role"]
+            formatted_role = self.get_role_tag(role)
+            formatted_histories.append(
+                {"role": formatted_role, "content": history["content"]}
+            )
+
+        return formatted_histories
 
     def get_role_tag(self, role):
         if role == Advisor.ROLE_USER:
@@ -37,9 +50,20 @@ class ChatGPTAdvisor(Advisor):
         if model is None:
             model = get_ai_settings().open_ai_model
 
-        messages = kwargs.get(Advisor.PARAM_HISTORIES, None)
-        if messages is None:
-            messages = []
+        session = kwargs.get(Advisor.PARAM_SESSION)
+        info(f"session: {session}")
+
+        messages = []
+        histories = None
+        if session is not None:
+            if session in self.session_histories:
+                histories = self.session_histories[session]
+
+            if histories is None:
+                histories = []
+            debug(f"histories: {histories}")
+
+            messages = self.format_histories(histories)
 
         messages.append({ "role": self.ROLE_TAG_USER, "content": prompt })
 
@@ -57,6 +81,13 @@ class ChatGPTAdvisor(Advisor):
             )
 
             result = completion_of_title.choices[0].message.content.strip()
+
+            if histories is not None and result is not None and len(result) > 0:
+                histories.append({"role": self.ROLE_USER, "content": prompt})
+                histories.append({"role": self.ROLE_ADVISOR, "content": result})
+
+                self.session_histories[session] = histories
+
         except Exception as err:
             info('ask GPT [{}] completion failed: {}'.format(model, err))
             result = None
