@@ -12,7 +12,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/dailystudio/devbricksx-py",
-    packages=find_packages(include=["devbricksx", "devbricksx.*"]),
+    packages=find_packages(include=["devbricksxai", "devbricksxai.*"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
@@ -23,5 +23,7 @@ setup(
     install_requires=[
         "Pillow>=10.2.0",
         "numpy",
+        "openai",
+        "firebase_admin",
     ],
 )
